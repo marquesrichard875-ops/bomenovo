@@ -1,0 +1,10 @@
+# Python
+.venv/
+__pycache__/
+*.db
+.env
+.pytest_cache/
+
+# Flutter
+mobile/build/
+mobile/.dart_tool/

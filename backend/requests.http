@@ -1,0 +1,49 @@
+### Exemplos de requisições (extensão "REST Client" do VS Code ou HTTP Client do IntelliJ)
+### Depois do login, copie o access_token para a variável abaixo.
+@base = http://localhost:8000
+@token = COLE_AQUI_O_TOKEN
+
+### Cadastro
+POST {{base}}/auth/register
+Content-Type: application/json
+
+{"name": "Maria Silva", "email": "maria@email.com", "password": "senha123"}
+
+### Login (devolve o access_token)
+POST {{base}}/auth/login
+Content-Type: application/json
+
+{"email": "maria@email.com", "password": "senha123"}
+
+### Usuário logado (rota protegida)
+GET {{base}}/auth/me
+Authorization: Bearer {{token}}
+
+### Criar tarefa
+POST {{base}}/tasks
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"title": "Estudar FastAPI", "description": "Ler a documentação"}
+
+### Listar tarefas
+GET {{base}}/tasks
+Authorization: Bearer {{token}}
+
+### Buscar tarefa por ID
+GET {{base}}/tasks/1
+Authorization: Bearer {{token}}
+
+### Atualizar tarefa (parcial)
+PUT {{base}}/tasks/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"done": true}
+
+### Excluir tarefa
+DELETE {{base}}/tasks/1
+Authorization: Bearer {{token}}
+
+### Erro: rota protegida sem token (401)
+GET {{base}}/tasks
