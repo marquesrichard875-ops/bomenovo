@@ -132,3 +132,16 @@ A URL da API é definida em `lib/config.dart`:
   `flutter run --dart-define=API_URL=http://192.168.0.10:8000`
 
 Funcionalidades do app: cadastro, login (token salvo no aparelho com `shared_preferences`), listar tarefas, criar, editar, marcar como concluída, excluir e sair. Se o token expirar, o app volta para o login mostrando a mensagem da API.
+
+## Interface web em Python (Flask)
+
+A segunda interface exigida pelo trabalho fica em `web/` e consome a mesma API. Com o backend rodando:
+
+```bash
+cd web
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+python app.py                # http://localhost:5000
+```
+
+Cadastro, login, criar, listar, editar, concluir e excluir tarefas; a lista se atualiza sozinha a cada 5 s, então alterações feitas no Flutter aparecem na web (e vice-versa). Detalhes e exemplos de uso em [`web/README.md`](web/README.md).
