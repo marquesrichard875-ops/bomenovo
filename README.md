@@ -132,3 +132,32 @@ A URL da API é definida em `lib/config.dart`:
   `flutter run --dart-define=API_URL=http://192.168.0.10:8000`
 
 Funcionalidades do app: cadastro, login (token salvo no aparelho com `shared_preferences`), listar tarefas, criar, editar, marcar como concluída, excluir e sair. Se o token expirar, o app volta para o login mostrando a mensagem da API.
+
+### Funcionalidades da interface Web
+
+- Cadastro de usuários.
+- Login e autenticação JWT.
+- Listagem de tarefas do usuário autenticado.
+- Criação e edição de tarefas.
+- Marcação de tarefas como concluídas.
+- Exclusão de tarefas.
+- Atualização automática da lista de tarefas.
+- Integração com o aplicativo Flutter por meio da mesma API.
+
+### Executando os testes da Web
+
+Com o ambiente virtual ativado, dentro da pasta `web`, execute:
+
+```bash
+python -m pytest tests/ -v
+```
+
+**Validação realizada:** 11 testes automatizados aprovados.
+
+### Observações importantes
+
+- O backend deve estar funcionando antes de utilizar a interface Web.
+- A API utiliza a porta `8000`.
+- A interface Web utiliza a porta `5000`.
+- O Flutter e a Web compartilham os dados por meio do backend.
+- Cada usuário gerencia somente suas próprias tarefas.
