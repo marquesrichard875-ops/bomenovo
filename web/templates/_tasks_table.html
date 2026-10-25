@@ -1,0 +1,38 @@
+{# Fragmento reutilizado na página e na atualização automática (polling) #}
+{% if tasks %}
+<table class="tasks">
+  <thead>
+    <tr><th></th><th>Tarefa</th><th>Criada em</th><th class="actions">Ações</th></tr>
+  </thead>
+  <tbody>
+  {% for t in tasks %}
+    <tr class="{{ 'done' if t.done }}">
+      <td>
+        <form method="post" action="{{ url_for('task_toggle', task_id=t.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="check" type="submit" title="{{ 'Marcar como pendente' if t.done else 'Marcar como concluída' }}">
+            {{ '☑' if t.done else '☐' }}
+          </button>
+        </form>
+      </td>
+      <td>
+        <strong class="title">{{ t.title }}</strong>
+        {% if t.description %}<div class="muted">{{ t.description }}</div>{% endif %}
+      </td>
+      <td class="muted nowrap">{{ t.created_at | datahora }}</td>
+      <td class="actions">
+        <a class="btn btn-small" href="{{ url_for('task_edit', task_id=t.id) }}">Editar</a>
+        <form method="post" action="{{ url_for('task_delete', task_id=t.id) }}" class="inline"
+              data-confirm="Excluir a tarefa &quot;{{ t.title }}&quot;?">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="btn btn-small btn-danger" type="submit">Excluir</button>
+        </form>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<p class="muted counter">{{ tasks | selectattr('done') | list | length }} de {{ tasks | length }} concluída(s)</p>
+{% else %}
+<p class="empty">Nenhuma tarefa ainda. Clique em <strong>+ Nova tarefa</strong> para começar.</p>
+{% endif %}

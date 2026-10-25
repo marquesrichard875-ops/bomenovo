@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/task.dart';
 import '../services/api_service.dart';
+import '../widgets/gradient_page.dart';
 
 /// Formulário usado tanto para criar (POST /tasks) quanto para editar (PUT /tasks/{id}).
 class TaskFormScreen extends StatefulWidget {
@@ -19,6 +20,13 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
   bool _saving = false;
 
   bool get _isEditing => widget.task != null;
+
+  @override
+  void dispose() {
+    _title.dispose();
+    _description.dispose();
+    super.dispose();
+  }
 
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
@@ -41,37 +49,54 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(_isEditing ? 'Editar tarefa' : 'Nova tarefa')),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _title,
-                decoration: const InputDecoration(labelText: 'Título', border: OutlineInputBorder()),
-                maxLength: 120,
-                validator: (v) => (v == null || v.trim().isEmpty) ? 'Informe o título' : null,
+    return GradientPage(
+      icon: _isEditing ? Icons.edit_note_rounded : Icons.add_task_rounded,
+      title: _isEditing ? 'Editar tarefa' : 'Nova tarefa',
+      subtitle: _isEditing ? 'Ajuste os detalhes abaixo' : 'O que você precisa fazer?',
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            TextFormField(
+              controller: _title,
+              decoration: const InputDecoration(
+                labelText: 'Título',
+                prefixIcon: Icon(Icons.title_rounded),
               ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _description,
-                decoration: const InputDecoration(labelText: 'Descrição (opcional)', border: OutlineInputBorder()),
-                maxLines: 4,
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton.icon(
-                  onPressed: _saving ? null : _save,
-                  icon: const Icon(Icons.save),
-                  label: const Text('Salvar'),
+              maxLength: 120,
+              textCapitalization: TextCapitalization.sentences,
+              validator: (v) => (v == null || v.trim().isEmpty) ? 'Informe o título' : null,
+            ),
+            const SizedBox(height: 8),
+            TextFormField(
+              controller: _description,
+              decoration: const InputDecoration(
+                labelText: 'Descrição (opcional)',
+                alignLabelWithHint: true,
+                prefixIcon: Padding(
+                  padding: EdgeInsets.only(bottom: 72),
+                  child: Icon(Icons.notes_rounded),
                 ),
               ),
-            ],
-          ),
+              maxLines: 4,
+              textCapitalization: TextCapitalization.sentences,
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed: _saving ? null : _save,
+                icon: _saving
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white),
+                      )
+                    : const Icon(Icons.check_rounded),
+                label: Text(_isEditing ? 'Salvar alterações' : 'Criar tarefa'),
+              ),
+            ),
+          ],
         ),
       ),
     );

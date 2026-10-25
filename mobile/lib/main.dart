@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'screens/login_screen.dart';
 import 'screens/tasks_screen.dart';
 import 'services/api_service.dart';
+import 'theme/app_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +21,9 @@ class TarefasApp extends StatelessWidget {
     return MaterialApp(
       title: 'Tarefas',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(colorSchemeSeed: Colors.indigo, useMaterial3: true),
+      theme: buildAppTheme(Brightness.light),
+      darkTheme: buildAppTheme(Brightness.dark),
+      themeMode: ThemeMode.system, // acompanha o modo claro/escuro do celular
       home: loggedIn ? const TasksScreen() : const LoginScreen(),
     );
   }

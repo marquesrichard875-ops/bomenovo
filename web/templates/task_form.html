@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% set editing = task is not none and task.id is defined %}
+{% block title %}{{ 'Editar tarefa' if editing else 'Nova tarefa' }}{% endblock %}
+{% block content %}
+<section class="card narrow">
+  <h1>{{ 'Editar tarefa' if editing else 'Nova tarefa' }}</h1>
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>Título
+      <input type="text" name="title" value="{{ task.title if task else '' }}" maxlength="120" required autofocus>
+    </label>
+    <label>Descrição <small class="muted">(opcional)</small>
+      <textarea name="description" rows="4">{{ task.description if task and task.description else '' }}</textarea>
+    </label>
+    <label class="checkbox">
+      <input type="checkbox" name="done" {{ 'checked' if task and task.done }}> Concluída
+    </label>
+    <div class="row-gap">
+      <button class="btn" type="submit">Salvar</button>
+      <a class="btn btn-ghost" href="{{ url_for('tasks') }}">Cancelar</a>
+    </div>
+  </form>
+</section>
+{% endblock %}
