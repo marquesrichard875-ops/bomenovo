@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../services/api_service.dart';
+import '../widgets/gradient_page.dart';
 import 'register_screen.dart';
 import 'tasks_screen.dart';
 
@@ -17,6 +18,14 @@ class _LoginScreenState extends State<LoginScreen> {
   final _email = TextEditingController();
   final _password = TextEditingController();
   bool _loading = false;
+  bool _hidePassword = true;
+
+  @override
+  void dispose() {
+    _email.dispose();
+    _password.dispose();
+    super.dispose();
+  }
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
@@ -34,48 +43,68 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Entrar')),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Form(
-            key: _formKey,
-            child: Column(
+    final scheme = Theme.of(context).colorScheme;
+
+    return GradientPage(
+      heroTag: 'auth-badge',
+      icon: Icons.checklist_rounded,
+      title: 'Bem-vindo de volta!',
+      subtitle: 'Entre para organizar suas tarefas',
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            TextFormField(
+              controller: _email,
+              decoration: const InputDecoration(
+                labelText: 'E-mail',
+                prefixIcon: Icon(Icons.email_outlined),
+              ),
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              validator: (v) => (v == null || !v.contains('@')) ? 'Informe um e-mail válido' : null,
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _password,
+              decoration: InputDecoration(
+                labelText: 'Senha',
+                prefixIcon: const Icon(Icons.lock_outline_rounded),
+                suffixIcon: IconButton(
+                  icon: Icon(_hidePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined),
+                  onPressed: () => setState(() => _hidePassword = !_hidePassword),
+                ),
+              ),
+              obscureText: _hidePassword,
+              validator: (v) => (v == null || v.isEmpty) ? 'Informe a senha' : null,
+              onFieldSubmitted: (_) => _submit(),
+            ),
+            const SizedBox(height: 28),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                onPressed: _loading ? null : _submit,
+                child: _loading
+                    ? const SizedBox(
+                        height: 22,
+                        width: 22,
+                        child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white),
+                      )
+                    : const Text('Entrar'),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.checklist, size: 72),
-                const SizedBox(height: 24),
-                TextFormField(
-                  controller: _email,
-                  decoration: const InputDecoration(labelText: 'E-mail', border: OutlineInputBorder()),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (v) => (v == null || !v.contains('@')) ? 'Informe um e-mail válido' : null,
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _password,
-                  decoration: const InputDecoration(labelText: 'Senha', border: OutlineInputBorder()),
-                  obscureText: true,
-                  validator: (v) => (v == null || v.isEmpty) ? 'Informe a senha' : null,
-                  onFieldSubmitted: (_) => _submit(),
-                ),
-                const SizedBox(height: 24),
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton(
-                    onPressed: _loading ? null : _submit,
-                    child: _loading
-                        ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                        : const Text('Entrar'),
-                  ),
-                ),
+                Text('Não tem conta?', style: TextStyle(color: scheme.onSurfaceVariant)),
                 TextButton(
                   onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const RegisterScreen())),
-                  child: const Text('Não tem conta? Cadastre-se'),
+                  child: const Text('Cadastre-se'),
                 ),
               ],
             ),
-          ),
+          ],
         ),
       ),
     );

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Minhas tarefas{% endblock %}
+{% block content %}
+<div class="row-between">
+  <h1>Minhas tarefas</h1>
+  <a class="btn" href="{{ url_for('task_new') }}">+ Nova tarefa</a>
+</div>
+
+<p class="muted sync">
+  <span id="sync-dot" class="dot"></span>
+  Sincronizado com a API · atualiza a cada {{ refresh_seconds }}s ·
+  última atualização: <strong id="last-update">agora</strong>
+  <button class="link" id="refresh-now" type="button">atualizar agora</button>
+</p>
+
+<section class="card" id="tasks-container">
+  {% include "_tasks_table.html" %}
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  window.TASKS_FRAGMENT_URL = "{{ url_for('tasks_fragment') }}";
+  window.LOGIN_URL = "{{ url_for('login') }}";
+  window.REFRESH_MS = {{ refresh_seconds }} * 1000;
+</script>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+{% endblock %}
